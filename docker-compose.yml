@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql:8.4
+
+    container_name: user-mysql
+
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: Root@User2026
+      MYSQL_DATABASE: user_db
+      MYSQL_USER: user_user
+      MYSQL_PASSWORD: User@Dev2026
+
+    ports:
+      - "3308:3306"
+
+    volumes:
+      - user-mysql-data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  user-mysql-data:

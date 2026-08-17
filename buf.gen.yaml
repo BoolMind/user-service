@@ -1,0 +1,10 @@
+version: v2
+
+inputs:
+  - directory: proto
+
+plugins:
+  - remote: buf.build/community/stephenh-ts-proto
+    out: generated
+    opt:
+      - nestJs=true
