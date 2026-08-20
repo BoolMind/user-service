@@ -6,14 +6,14 @@ import { AppBaseEntity } from '@ecommerce/common';
 export class User extends AppBaseEntity {
   @Column({
     type: 'varchar',
-    length: 100,
+    length: 255,
     nullable: false,
   })
   name!: string;
 
   @Column({
     type: 'varchar',
-    length: 150,
+    length: 320,
     unique: true,
     nullable: false,
   })

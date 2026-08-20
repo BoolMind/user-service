@@ -1,9 +1,13 @@
+import 'dotenv/config';
+import { initTracing } from '@ecommerce/common';
+initTracing(process.env.SERVICE_NAME ?? 'user-service');
+
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
-import { GrpcExceptionFilter } from '@ecommerce/common';
-import { AppLogger } from '@ecommerce/common';
+import { AppLogger, GrpcExceptionFilter } from '@ecommerce/common';
+import { grpcConfig } from './config';
 
 const contractsPath = require.resolve('@ecommerce/contracts/package.json')
   .replace('/package.json', '');
@@ -24,15 +28,14 @@ async function bootstrap() {
       ],
 
       loader: {
+        longs: Number,
         includeDirs: [
           `${contractsPath}/proto`,
           `${contractsPath}/dependencies`,
         ],
       },
 
-      url: `${process.env.GRPC_HOST ?? '0.0.0.0'}:${
-        process.env.GRPC_PORT ?? 50052
-      }`,
+      url: `${grpcConfig().host}:${grpcConfig().port}`,
     },
   });
 
@@ -41,10 +44,8 @@ async function bootstrap() {
 
   await app.listen();
 
-  console.log(
-    `🚀 User gRPC service running on ${
-      process.env.GRPC_PORT ?? 50052
-    }`,
+  app.get(AppLogger).log(
+    `User gRPC service running on ${grpcConfig().host}:${grpcConfig().port}`,
   );
 }
 

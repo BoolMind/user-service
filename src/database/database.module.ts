@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { OutboxEntity } from '@ecommerce/common';
 
 @Module({
   imports: [
@@ -23,12 +24,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         database: configService.get<string>('database.database'),
 
         autoLoadEntities: true,
+        entities: [OutboxEntity],
 
         synchronize: configService.get<boolean>('database.synchronize'),
 
         logging: configService.get<boolean>('database.logging'),
 
         migrations: ['dist/database/migrations/*.js'],
+        migrationsRun: true,
       }),
     }),
   ],

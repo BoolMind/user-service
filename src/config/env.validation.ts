@@ -20,4 +20,6 @@ export const envValidationSchema = Joi.object({
 
   GRPC_HOST: Joi.string().required(),
   GRPC_PORT: Joi.number().port().default(50051),
+
+  KAFKA_BROKERS: Joi.string().required(),
 });
