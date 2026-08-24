@@ -1,26 +1,29 @@
-
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import {
+  Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource,
+  Repository } from "typeorm";
 
 import {
   BaseService,
   InvalidRequestException,
-  OutboxService,
   USER_EVENTS_TOPIC,
-} from '@ecommerce/common';
+} from "@ecommerce/common";
+import {
+  OutboxService,
+} from "@ecommerce/common/persistence";
 
-import { User } from './entities/user.entity';
+import { User } from "./entities/user.entity";
 
 import {
   UserAlreadyExistsException,
   UserNotFoundException,
-} from './exceptions';
+} from "./exceptions";
 
 import {
   CreateUserData,
   UpdateUserData,
-} from './interfaces/user-service.interface';
+} from "./interfaces/user-service.interface";
 
 @Injectable()
 export class UsersService extends BaseService<
@@ -38,23 +41,22 @@ export class UsersService extends BaseService<
   }
 
   protected override entityName(): string {
-    return 'User';
+    return "User";
   }
 
   protected override searchableFields(): (keyof User)[] {
-    return ['name', 'email'];
+    return ["name", "email"];
   }
 
- 
-  protected override createNotFoundException(
-    id: number,
-  ): Error {
+  protected override sortableFields(): (keyof User)[] {
+    return ["id", "name", "email", "createdAt", "updatedAt"];
+  }
+
+  protected override createNotFoundException(id: number): Error {
     return new UserNotFoundException(id);
   }
 
-  async create(
-    data: CreateUserData,
-  ): Promise<User> {
+  async create(data: CreateUserData): Promise<User> {
     const existing = await this.findOne({
       where: {
         email: data.email,
@@ -62,9 +64,7 @@ export class UsersService extends BaseService<
     });
 
     if (existing) {
-      throw new UserAlreadyExistsException(
-        data.email,
-      );
+      throw new UserAlreadyExistsException(data.email);
     }
 
     return this.dataSource.transaction(async (manager) => {
@@ -72,12 +72,12 @@ export class UsersService extends BaseService<
       const user = await userRepository.save(userRepository.create(data));
 
       await this.outboxService.saveToOutbox(manager, {
-        aggregateType: 'User',
+        aggregateType: "User",
         aggregateId: String(user.id),
-        eventType: 'user.registered',
+        eventType: "user.registered",
         destination: `kafka:${USER_EVENTS_TOPIC}`,
         payload: {
-          eventType: 'user.registered',
+          eventType: "user.registered",
           userId: user.id,
           name: user.name,
           email: user.email,
@@ -89,20 +89,16 @@ export class UsersService extends BaseService<
     });
   }
 
-  async update(
-    id: number,
-    data: UpdateUserData,
-  ): Promise<User> {
+  async update(id: number, data: UpdateUserData): Promise<User> {
     if (data.name === undefined && data.email === undefined) {
-      throw new InvalidRequestException('At least one user field must be updated');
+      throw new InvalidRequestException(
+        "At least one user field must be updated",
+      );
     }
 
     const user = await this.findOneOrFail(id);
 
-    if (
-      data.email !== undefined &&
-      data.email !== user.email
-    ) {
+    if (data.email !== undefined && data.email !== user.email) {
       const existing = await this.findOne({
         where: {
           email: data.email,
@@ -110,13 +106,10 @@ export class UsersService extends BaseService<
       });
 
       if (existing) {
-        throw new UserAlreadyExistsException(
-          data.email,
-        );
+        throw new UserAlreadyExistsException(data.email);
       }
     }
 
     return super.update(id, data);
   }
 }
-

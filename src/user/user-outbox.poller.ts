@@ -1,6 +1,11 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { OutboxService } from '@ecommerce/common';
-import { UserOutboxPublisher } from './user-outbox.publisher';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from "@nestjs/common";
+import { OutboxService } from "@ecommerce/common";
+import { UserOutboxPublisher } from "./user-outbox.publisher";
 
 @Injectable()
 export class UserOutboxPoller implements OnModuleInit, OnModuleDestroy {

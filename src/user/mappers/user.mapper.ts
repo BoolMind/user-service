@@ -1,7 +1,7 @@
-import { dateToTimestamp } from '@ecommerce/common';
+import { dateToTimestamp } from "@ecommerce/common";
 
-import { User as UserEntity } from '../entities/user.entity';
-import { User as UserGrpc } from '@ecommerce/contracts/generated/ecommerce/user/v1/user';
+import { User as UserEntity } from "../entities/user.entity";
+import { User as UserGrpc } from "@ecommerce/contracts/generated/ecommerce/user/v1/user";
 
 export function userToGrpc(user: UserEntity): UserGrpc {
   return {

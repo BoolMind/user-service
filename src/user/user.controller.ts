@@ -1,5 +1,6 @@
-import { GrpcController, InvalidRequestException, ValidateGrpc } from "@ecommerce/common";
+import { GrpcController, ValidateGrpc } from "@ecommerce/common";
 import { toGrpcDeleteResponse, toGrpcPageMeta } from "@ecommerce/common";
+import { toTypeOrmOrder } from "@ecommerce/common";
 
 import {
   UserServiceCreateRequest,
@@ -23,7 +24,7 @@ import { userToGrpc } from "./mappers/user.mapper";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ValidateGrpc('ecommerce.user.v1.UserServiceCreateRequest')
+  @ValidateGrpc("ecommerce.user.v1.UserServiceCreateRequest")
   async create(
     request: UserServiceCreateRequest,
   ): Promise<UserServiceCreateResponse> {
@@ -34,7 +35,7 @@ export class UsersController {
     };
   }
 
-  @ValidateGrpc('ecommerce.user.v1.UserServiceGetByIdRequest')
+  @ValidateGrpc("ecommerce.user.v1.UserServiceGetByIdRequest")
   async getById(
     request: UserServiceGetByIdRequest,
   ): Promise<UserServiceGetByIdResponse> {
@@ -45,7 +46,7 @@ export class UsersController {
     };
   }
 
-  @ValidateGrpc('ecommerce.user.v1.UserServiceUpdateRequest')
+  @ValidateGrpc("ecommerce.user.v1.UserServiceUpdateRequest")
   async update(
     request: UserServiceUpdateRequest,
   ): Promise<UserServiceUpdateResponse> {
@@ -58,16 +59,16 @@ export class UsersController {
     };
   }
 
-  @ValidateGrpc('ecommerce.user.v1.UserServiceDeleteRequest')
+  @ValidateGrpc("ecommerce.user.v1.UserServiceDeleteRequest")
   async delete(
-  request: UserServiceDeleteRequest,
-): Promise<UserServiceDeleteResponse> {
-  await this.usersService.softDelete(request.id);
+    request: UserServiceDeleteRequest,
+  ): Promise<UserServiceDeleteResponse> {
+    await this.usersService.softDelete(request.id);
 
-  return toGrpcDeleteResponse();
-}
+    return toGrpcDeleteResponse();
+  }
 
-  @ValidateGrpc('ecommerce.user.v1.UserServiceRestoreRequest')
+  @ValidateGrpc("ecommerce.user.v1.UserServiceRestoreRequest")
   async restore(
     request: UserServiceRestoreRequest,
   ): Promise<UserServiceRestoreResponse> {
@@ -78,23 +79,16 @@ export class UsersController {
     };
   }
 
-  @ValidateGrpc('ecommerce.user.v1.UserServicePaginateRequest')
+  @ValidateGrpc("ecommerce.user.v1.UserServicePaginateRequest")
   async paginate(
     request: UserServicePaginateRequest,
   ): Promise<UserServicePaginateResponse> {
-    const allowedOrderBy = new Set(['id', 'name', 'email', 'createdAt', 'updatedAt']);
-
-    if (request.orderBy && !allowedOrderBy.has(request.orderBy)) {
-      throw new InvalidRequestException('Unsupported order_by field');
-    }
-
     const result = await this.usersService.paginate({
       page: request.page,
       limit: request.limit,
       search: request.search,
       orderBy: request.orderBy,
-      order:
-        request.order === 1 ? "ASC" : request.order === 2 ? "DESC" : undefined,
+      order: toTypeOrmOrder(request.order),
     });
 
     return {

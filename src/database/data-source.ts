@@ -1,10 +1,10 @@
-import 'dotenv/config';
+import "dotenv/config";
 
-import { DataSource } from 'typeorm';
-import { OutboxEntity } from '@ecommerce/common';
+import { DataSource } from "typeorm";
+import { OutboxEntity } from "@ecommerce/common";
 
 export default new DataSource({
-  type: 'mysql',
+  type: "mysql",
 
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
@@ -14,8 +14,8 @@ export default new DataSource({
 
   synchronize: false,
 
-  logging: process.env.DB_LOGGING === 'true',
+  logging: process.env.DB_LOGGING === "true",
 
-  entities: ['src*.entity.ts', OutboxEntity],
-  migrations: ['src/database/migrations/*.ts'],
+  entities: ["src*.entity.ts", OutboxEntity],
+  migrations: ["src/database/migrations/*.ts"],
 });

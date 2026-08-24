@@ -1,4 +1,4 @@
-import { registerAs } from '@nestjs/config';
+import { registerAs } from "@nestjs/config";
 
 export interface AppConfig {
   nodeEnv: string;
@@ -6,11 +6,8 @@ export interface AppConfig {
   serviceName: string;
 }
 
-export default registerAs(
-  'app',
-  (): AppConfig => ({
-    nodeEnv: process.env.NODE_ENV ?? 'development',
-    port: parseInt(process.env.PORT ?? '3001', 10),
-    serviceName: process.env.SERVICE_NAME ?? '',
-  }),
-);
+export default registerAs("app", (): AppConfig => ({
+  nodeEnv: process.env.NODE_ENV ?? "development",
+  port: parseInt(process.env.PORT ?? "3001", 10),
+  serviceName: process.env.SERVICE_NAME ?? "",
+}));

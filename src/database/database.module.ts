@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { OutboxEntity } from '@ecommerce/common';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { OutboxEntity } from "@ecommerce/common";
 
 @Module({
   imports: [
@@ -11,26 +11,26 @@ import { OutboxEntity } from '@ecommerce/common';
       inject: [ConfigService],
 
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: "mysql",
 
-        host: configService.get<string>('database.host'),
+        host: configService.get<string>("database.host"),
 
-        port: configService.get<number>('database.port'),
+        port: configService.get<number>("database.port"),
 
-        username: configService.get<string>('database.username'),
+        username: configService.get<string>("database.username"),
 
-        password: configService.get<string>('database.password'),
+        password: configService.get<string>("database.password"),
 
-        database: configService.get<string>('database.database'),
+        database: configService.get<string>("database.database"),
 
         autoLoadEntities: true,
         entities: [OutboxEntity],
 
-        synchronize: configService.get<boolean>('database.synchronize'),
+        synchronize: configService.get<boolean>("database.synchronize"),
 
-        logging: configService.get<boolean>('database.logging'),
+        logging: configService.get<boolean>("database.logging"),
 
-        migrations: ['dist/database/migrations/*.js'],
+        migrations: ["dist/database/migrations/*.js"],
         migrationsRun: true,
       }),
     }),

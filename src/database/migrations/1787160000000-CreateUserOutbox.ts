@@ -1,7 +1,7 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CreateUserOutbox1787160000000 implements MigrationInterface {
-  name = 'CreateUserOutbox1787160000000';
+  name = "CreateUserOutbox1787160000000";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -28,6 +28,6 @@ export class CreateUserOutbox1787160000000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('DROP TABLE `outbox_events`');
+    await queryRunner.query("DROP TABLE `outbox_events`");
   }
 }

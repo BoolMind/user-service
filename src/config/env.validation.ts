@@ -1,9 +1,9 @@
-import Joi from 'joi';
+import Joi from "joi";
 
 export const envValidationSchema = Joi.object({
   NODE_ENV: Joi.string()
-    .valid('development', 'test', 'production')
-    .default('development'),
+    .valid("development", "test", "production")
+    .default("development"),
 
   SERVICE_NAME: Joi.string().required(),
 
@@ -12,7 +12,7 @@ export const envValidationSchema = Joi.object({
   DB_HOST: Joi.string().required(),
   DB_PORT: Joi.number().port().default(3306),
   DB_USERNAME: Joi.string().required(),
-  DB_PASSWORD: Joi.string().allow('').required(),
+  DB_PASSWORD: Joi.string().allow("").required(),
   DB_NAME: Joi.string().required(),
 
   DB_SYNCHRONIZE: Joi.boolean().default(false),
